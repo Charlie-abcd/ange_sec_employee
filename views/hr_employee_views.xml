@@ -57,6 +57,11 @@
                     </group>
                 </xpath>
 
+                <!-- Ajout du champ faction dans la zone Horaire -->
+                <xpath expr="//field[@name='resource_calendar_id']" position="after">
+                    <field name="faction_id" options="{'no_create_edit': True}"/>
+                </xpath>
+
             </field>
         </record>
 

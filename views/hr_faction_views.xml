@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- Vue formulaire pour hr.faction -->
+        <record id="view_hr_faction_form" model="ir.ui.view">
+            <field name="name">hr.faction.form</field>
+            <field name="model">hr.faction</field>
+            <field name="arch" type="xml">
+                <form string="Faction de Travail">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="type_faction"/>
+                                <field name="active"/>
+                            </group>
+                            <group>
+                                <field name="heure_debut" widget="float_time"/>
+                                <field name="heure_fin" widget="float_time"/>
+                                <field name="nb_employees" readonly="1"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="description" placeholder="Description détaillée de la faction..."/>
+                        </group>
+                        <notebook>
+                            <page string="Employés Assignés" name="employees">
+                                <field name="employee_ids" readonly="1">
+                                    <list string="Employés">
+                                        <field name="name"/>
+                                        <field name="work_email"/>
+                                        <field name="work_phone"/>
+                                        <field name="department_id"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vue liste pour hr.faction -->
+        <record id="view_hr_faction_list" model="ir.ui.view">
+            <field name="name">hr.faction.list</field>
+            <field name="model">hr.faction</field>
+            <field name="arch" type="xml">
+                <list string="Factions de Travail">
+                    <field name="name"/>
+                    <field name="type_faction"/>
+                    <field name="heure_debut" widget="float_time"/>
+                    <field name="heure_fin" widget="float_time"/>
+                    <field name="nb_employees"/>
+                    <field name="active" widget="boolean_toggle"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Vue kanban pour hr.faction -->
+        <record id="view_hr_faction_kanban" model="ir.ui.view">
+            <field name="name">hr.faction.kanban</field>
+            <field name="model">hr.faction</field>
+            <field name="arch" type="xml">
+                <kanban string="Factions de Travail" default_group_by="type_faction">
+                    <field name="name"/>
+                    <field name="type_faction"/>
+                    <field name="heure_debut"/>
+                    <field name="heure_fin"/>
+                    <field name="nb_employees"/>
+                    <field name="active"/>
+                    <field name="description"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_card oe_kanban_global_click" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin: 8px; border: none; overflow: hidden;">
+                                <!-- Header coloré selon le type -->
+                                <div t-att-style="'background: linear-gradient(135deg, ' + (record.type_faction.raw_value === 'jour' ? '#28a745, #34ce57' : record.type_faction.raw_value === 'nuit' ? '#6c5ce7, #a29bfe' : '#fd7e14, #fdcb6e') + '); color: white; padding: 16px; position: relative;'">
+                                    <!-- Icône décorative -->
+                                    <div style="position: absolute; right: 10px; top: 10px; opacity: 0.3; font-size: 24px;">
+                                        <i t-att-class="'fa ' + (record.type_faction.raw_value === 'jour' ? 'fa-sun-o' : record.type_faction.raw_value === 'nuit' ? 'fa-moon-o' : 'fa-cog')" t-att-title="record.type_faction.value"/>
+                                    </div>
+                                    
+                                    <!-- Titre -->
+                                    <h4 style="margin: 0 0 8px 0; font-weight: 600; font-size: 16px;">
+                                        <field name="name"/>
+                                    </h4>
+                                    <div style="opacity: 0.9; font-size: 13px;">
+                                        <i class="fa fa-tag" title="Type" style="margin-right: 4px;"/>
+                                        <field name="type_faction"/>
+                                    </div>
+                                </div>
+
+                                <!-- Contenu -->
+                                <div style="padding: 16px; background: white;">
+                                    <!-- Horaires -->
+                                    <div style="display: flex; align-items: center; margin-bottom: 12px; padding: 10px; background: #f8f9fa; border-radius: 6px;">
+                                        <div style="background: #007bff; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; margin-right: 10px; font-size: 12px;">
+                                            <i class="fa fa-clock-o" title="Horaires"/>
+                                        </div>
+                                        <div style="flex: 1;">
+                                            <div style="font-weight: 600; color: #495057;">
+                                                <t t-esc="Math.floor(record.heure_debut.raw_value)"/>h<t t-esc="Math.floor((record.heure_debut.raw_value % 1) * 60).toString().padStart(2, '0')"/> 
+                                                <span style="color: #6c757d; margin: 0 6px;">→</span>
+                                                <t t-esc="Math.floor(record.heure_fin.raw_value)"/>h<t t-esc="Math.floor((record.heure_fin.raw_value % 1) * 60).toString().padStart(2, '0')"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Employés -->
+                                    <div style="display: flex; align-items: center; margin-bottom: 12px; padding: 10px; background: #f8f9fa; border-radius: 6px;">
+                                        <div style="background: #28a745; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; margin-right: 10px; font-size: 12px;">
+                                            <i class="fa fa-users" title="Employés"/>
+                                        </div>
+                                        <div style="flex: 1;">
+                                            <div style="font-weight: 600; color: #495057;">
+                                                <field name="nb_employees"/> 
+                                                <span style="color: #6c757d; font-weight: normal; font-size: 13px;">
+                                                    employé<t t-if="record.nb_employees.raw_value > 1">s</t>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Statut -->
+                                    <div style="text-align: center; margin-top: 12px;">
+                                        <span t-if="record.active.raw_value" style="background: #d4edda; color: #155724; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 500;">
+                                            <i class="fa fa-check" title="Active"/> ACTIVE
+                                        </span>
+                                        <span t-if="!record.active.raw_value" style="background: #f8d7da; color: #721c24; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 500;">
+                                            <i class="fa fa-pause" title="Inactive"/> INACTIVE
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Vue de recherche pour hr.faction -->
+        <record id="view_hr_faction_search" model="ir.ui.view">
+            <field name="name">hr.faction.search</field>
+            <field name="model">hr.faction</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher Factions">
+                    <field name="name"/>
+                    <field name="type_faction"/>
+                    <filter string="Actives" name="active" domain="[('active', '=', True)]"/>
+                    <filter string="Inactives" name="inactive" domain="[('active', '=', False)]"/>
+                    <separator/>
+                    <filter string="Jour" name="jour" domain="[('type_faction', '=', 'jour')]"/>
+                    <filter string="Nuit" name="nuit" domain="[('type_faction', '=', 'nuit')]"/>
+                    <filter string="Personnalisées" name="custom" domain="[('type_faction', '=', 'custom')]"/>
+                    <group expand="0" string="Grouper par">
+                        <filter string="Type" name="group_type" context="{'group_by': 'type_faction'}"/>
+                        <filter string="Statut" name="group_active" context="{'group_by': 'active'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action pour hr.faction -->
+        <record id="action_hr_faction" model="ir.actions.act_window">
+            <field name="name">Factions de Travail</field>
+            <field name="res_model">hr.faction</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Créer une nouvelle faction de travail
+                </p>
+                <p>
+                    Les factions définissent les horaires de travail par défaut des employés.
+                    Vous pouvez créer des factions pour le jour, la nuit ou des horaires personnalisés.
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu pour hr.faction -->
+        <menuitem id="menu_hr_faction"
+                  name="Factions"
+                  parent="hr.menu_hr_root"
+                  action="action_hr_faction"
+                  sequence="50"/>
+
+    </data>
+</odoo>

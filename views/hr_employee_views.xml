@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- Extension du formulaire hr.employee -->
+        <record id="view_employee_form_ange_security" model="ir.ui.view">
+            <field name="name">hr.employee.form.ange.security</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                
+                <!-- Ajout de l'onglet ÉQUIPEMENT ET SANTÉ -->
+                <xpath expr="//notebook" position="inside">
+                    <page string="ÉQUIPEMENT ET SANTÉ" name="equipment_health">
+                        <group>
+                            <group string="Équipement">
+                                <field name="uniforme_travail" placeholder="Description de l'uniforme attribué..."/>
+                                <field name="date_renouvellement_uniforme"/>
+                            </group>
+                            <group string="Santé">
+                                <field name="visite_medicale_ids" widget="one2many_list" colspan="2">
+                                    <list string="Visites Médicales" editable="bottom">
+                                        <field name="date"/>
+                                        <field name="description"/>
+                                        <field name="fait" widget="boolean_toggle"/>
+                                    </list>
+                                </field>
+                                <field name="etat_formations" placeholder="État actuel des formations..."/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+
+                <!-- Modification de l'onglet INFORMATIONS PRIVÉES -->
+                <!-- Renommage des champs d'identification -->
+                <xpath expr="//field[@name='identification_id']" position="attributes">
+                    <attribute name="string">Numéro CNI</attribute>
+                </xpath>
+                
+                <xpath expr="//field[@name='passport_id']" position="attributes">
+                    <attribute name="string">Numéro carte de séjour</attribute>
+                </xpath>
+
+                <!-- Ajout des dates de validité après les champs d'identification -->
+                <xpath expr="//field[@name='identification_id']" position="after">
+                    <field name="date_validite_cni"/>
+                </xpath>
+                
+                <xpath expr="//field[@name='passport_id']" position="after">
+                    <field name="date_validite_carte_sejour"/>
+                </xpath>
+
+                <!-- Ajout du matricule agent sous les coordonnées privées -->
+                <xpath expr="//group[@name='emergency']" position="after">
+                    <group string="Informations Agent">
+                        <field name="matricule_agent" placeholder="Matricule unique de l'agent"/>
+                    </group>
+                </xpath>
+
+            </field>
+        </record>
+
+        <!-- Vue liste étendue pour afficher le matricule agent -->
+        <record id="view_employee_tree_ange_security" model="ir.ui.view">
+            <field name="name">hr.employee.tree.ange.security</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='work_phone']" position="after">
+                    <field name="matricule_agent" optional="hide"/>
+                </xpath>
+            </field>
+        </record>
+
+
+        <!-- Vue de recherche étendue -->
+        <record id="view_employee_filter_ange_security" model="ir.ui.view">
+            <field name="name">hr.employee.search.ange.security</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="matricule_agent"/>
+                </xpath>
+                <xpath expr="//group" position="inside">
+                    <filter string="Avec matricule agent" name="has_matricule" 
+                            domain="[('matricule_agent', '!=', False)]"/>
+                    <filter string="Uniforme à renouveler" name="uniform_renewal" 
+                            domain="[('date_renouvellement_uniforme', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Vue formulaire simple pour les visites médicales (pour le widget many2many) -->
+        <record id="view_visite_medicale_form_simple" model="ir.ui.view">
+            <field name="name">visite.medicale.form.simple</field>
+            <field name="model">visite.medicale</field>
+            <field name="arch" type="xml">
+                <form string="Visite Médicale">
+                    <group>
+                        <group>
+                            <field name="date"/>
+                            <field name="fait"/>
+                        </group>
+                        <group>
+                            <field name="description" placeholder="Description de la visite médicale..."/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vue liste pour les visites médicales -->
+        <record id="view_visite_medicale_list" model="ir.ui.view">
+            <field name="name">visite.medicale.list</field>
+            <field name="model">visite.medicale</field>
+            <field name="arch" type="xml">
+                <list string="Visites Médicales">
+                    <field name="date"/>
+                    <field name="description"/>
+                    <field name="fait" widget="boolean_toggle"/>
+                </list>
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -33,7 +33,9 @@ Fonctionnalités :
         'hr',
     ],
     'data': [
+        'data/hr_faction_data.xml',
         'security/ir.model.access.csv',
+        'views/hr_faction_views.xml',
         'views/hr_employee_views.xml',
     ],
     'installable': True,

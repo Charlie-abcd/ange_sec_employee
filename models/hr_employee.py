@@ -64,6 +64,13 @@ class HrEmployee(models.Model):
         string='Matricule agent',
         help='Matricule unique de l\'agent de sécurité'
     )
+    
+    # Faction de travail
+    faction_id = fields.Many2one(
+        'hr.faction',
+        string='Faction',
+        help='Faction par défaut du collaborateur'
+    )
 
     # ========================================
     # MÉTHODES ET CONTRAINTES

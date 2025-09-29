@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_visite_medicale_user,visite.medicale.user,model_visite_medicale,base.group_user,1,1,1,1

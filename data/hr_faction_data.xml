@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Factions Standard Jour -->
+        <record id="faction_standard_jour_6_18" model="hr.faction">
+            <field name="name">Faction Standard Jour</field>
+            <field name="heure_debut">6.0</field>
+            <field name="heure_fin">18.0</field>
+            <field name="type_faction">jour</field>
+            <field name="description">Faction standard de jour de 6h à 18h</field>
+            <field name="active">True</field>
+        </record>
+        
+        <record id="faction_standard_jour_7_19" model="hr.faction">
+            <field name="name">Faction Standard Jour</field>
+            <field name="heure_debut">7.0</field>
+            <field name="heure_fin">19.0</field>
+            <field name="type_faction">jour</field>
+            <field name="description">Faction standard de jour de 7h à 19h</field>
+            <field name="active">True</field>
+        </record>
+        
+        <!-- Factions Nuit -->
+        <record id="faction_nuit_18_6" model="hr.faction">
+            <field name="name">Faction Nuit</field>
+            <field name="heure_debut">18.0</field>
+            <field name="heure_fin">6.0</field>
+            <field name="type_faction">nuit</field>
+            <field name="description">Faction de nuit de 18h à 6h</field>
+            <field name="active">True</field>
+        </record>
+        
+        <record id="faction_nuit_19_7" model="hr.faction">
+            <field name="name">Faction Nuit</field>
+            <field name="heure_debut">19.0</field>
+            <field name="heure_fin">7.0</field>
+            <field name="type_faction">nuit</field>
+            <field name="description">Faction de nuit de 19h à 7h</field>
+            <field name="active">True</field>
+        </record>
+        
+        <!-- Factions Custom -->
+        <record id="faction_custom_matin" model="hr.faction">
+            <field name="name">Faction Custom Matin</field>
+            <field name="heure_debut">6.0</field>
+            <field name="heure_fin">14.0</field>
+            <field name="type_faction">custom</field>
+            <field name="description">Faction personnalisée du matin de 6h à 14h</field>
+            <field name="active">True</field>
+        </record>
+        
+        <record id="faction_custom_apres_midi" model="hr.faction">
+            <field name="name">Faction Custom Après-midi</field>
+            <field name="heure_debut">14.0</field>
+            <field name="heure_fin">22.0</field>
+            <field name="type_faction">custom</field>
+            <field name="description">Faction personnalisée de l'après-midi de 14h à 22h</field>
+            <field name="active">True</field>
+        </record>
+        
+        <record id="faction_custom_soir" model="hr.faction">
+            <field name="name">Faction Custom Soir</field>
+            <field name="heure_debut">22.0</field>
+            <field name="heure_fin">6.0</field>
+            <field name="type_faction">custom</field>
+            <field name="description">Faction personnalisée du soir de 22h à 6h</field>
+            <field name="active">True</field>
+        </record>
+        
+    </data>
+</odoo>

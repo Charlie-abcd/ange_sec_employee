@@ -11,15 +11,6 @@ class HrEmployee(models.Model):
     # CHAMPS POUR L'ONGLET ÉQUIPEMENT ET SANTÉ
     # ========================================
     
-    uniforme_travail = fields.Text(
-        string='Uniforme de travail',
-        help='Description de l\'uniforme de travail attribué à l\'employé'
-    )
-    
-    date_renouvellement_uniforme = fields.Date(
-        string='Date renouvellement uniforme',
-        help='Date prévue pour le renouvellement de l\'uniforme'
-    )
     
     visite_medicale_ids = fields.One2many(
         'visite.medicale',
@@ -28,10 +19,40 @@ class HrEmployee(models.Model):
         help='Visites médicales associées à cet employé'
     )
     
-    etat_formations = fields.Text(
-        string='État des formations',
-        help='État actuel des formations de l\'employé'
+    # Nouvelle relation avec les formations via le modèle intermédiaire
+    formation_ids = fields.One2many(
+        'ange.employee.formation',
+        'employee_id',
+        string='Formations',
+        help='Formations assignées à cet employé avec leurs statuts'
     )
+    
+    
+    # Champs calculés pour statistiques
+    nb_formations_total = fields.Integer(
+        string='Nombre de formations total',
+        compute='_compute_formation_stats',
+        help='Nombre total de formations assignées'
+    )
+    
+    nb_formations_terminees = fields.Integer(
+        string='Formations terminées',
+        compute='_compute_formation_stats',
+        help='Nombre de formations terminées'
+    )
+    
+    nb_formations_en_cours = fields.Integer(
+        string='Formations en cours',
+        compute='_compute_formation_stats',
+        help='Nombre de formations en cours'
+    )
+    
+    nb_formations_recyclage = fields.Integer(
+        string='Formations à recycler',
+        compute='_compute_formation_stats',
+        help='Nombre de formations nécessitant un recyclage'
+    )
+    
 
     # ========================================
     # CHAMPS POUR L'ONGLET INFORMATIONS PRIVÉES
@@ -66,6 +87,14 @@ class HrEmployee(models.Model):
     )
     
     # Faction de travail
+    # Champ pour choisir le type de faction d'abord
+    type_faction_choisi = fields.Selection([
+        ('jour', 'Jour'),
+        ('nuit', 'Nuit'),
+        ('custom', 'Personnalisée')
+    ], string='Type de faction', 
+       help='Choisissez d\'abord le type de faction pour filtrer les options')
+    
     faction_id = fields.Many2one(
         'hr.faction',
         string='Faction',
@@ -75,6 +104,24 @@ class HrEmployee(models.Model):
     # ========================================
     # MÉTHODES ET CONTRAINTES
     # ========================================
+    
+    @api.onchange('type_faction_choisi')
+    def _onchange_type_faction_choisi(self):
+        """Réinitialiser la faction quand le type change"""
+        if self.type_faction_choisi:
+            # Réinitialiser la faction sélectionnée pour forcer un nouveau choix
+            self.faction_id = False
+    
+    @api.depends('formation_ids.statut')
+    def _compute_formation_stats(self):
+        """Calculer les statistiques de formation de l'employé"""
+        for employee in self:
+            formations = employee.formation_ids
+            employee.nb_formations_total = len(formations)
+            employee.nb_formations_terminees = len(formations.filtered(lambda f: f.statut == 'terminee'))
+            employee.nb_formations_en_cours = len(formations.filtered(lambda f: f.statut == 'en_cours'))
+            employee.nb_formations_recyclage = len(formations.filtered(lambda f: f.statut == 'recyclage_requis'))
+            
     
     @api.constrains('matricule_agent')
     def _check_matricule_agent_unique(self):
@@ -89,6 +136,56 @@ class HrEmployee(models.Model):
                     raise models.ValidationError(_(
                         'Le matricule agent "%s" est déjà utilisé par un autre employé.'
                     ) % record.matricule_agent)
+    
+    # Relation avec les équipements via le modèle intermédiaire
+    equipement_ids = fields.One2many(
+        'ange.employee.equipement',
+        'employee_id',
+        string='Équipements assignés'
+    )
+    
+    # Champs calculés pour les équipements
+    nb_equipements_actifs = fields.Integer(
+        string='Équipements actifs',
+        compute='_compute_equipements_stats',
+        store=True
+    )
+    
+    nb_equipements_expires = fields.Integer(
+        string='Équipements expirés',
+        compute='_compute_equipements_stats',
+        store=True
+    )
+    
+    @api.depends('equipement_ids.statut')
+    def _compute_equipements_stats(self):
+        """Calculer les statistiques des équipements"""
+        for employee in self:
+            equipements = employee.equipement_ids
+            employee.nb_equipements_actifs = len(equipements.filtered(lambda e: e.statut == 'actif'))
+            employee.nb_equipements_expires = len(equipements.filtered(lambda e: e.statut == 'expire'))
+
+    def action_view_formations(self):
+        """Action pour voir les formations de cet employé"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': f'Formations - {self.name}',
+            'res_model': 'ange.employee.formation',
+            'view_mode': 'list,form',
+            'domain': [('employee_id', '=', self.id)],
+            'context': {'default_employee_id': self.id}
+        }
+    
+    def action_view_equipements(self):
+        """Action pour voir les équipements de cet employé"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': f'Équipements - {self.name}',
+            'res_model': 'ange.employee.equipement',
+            'view_mode': 'list,form',
+            'domain': [('employee_id', '=', self.id)],
+            'context': {'default_employee_id': self.id}
+        }
 
     @api.model
     def _get_view_cache_key(self, view_id=None, view_type='form', **options):

@@ -3,3 +3,15 @@ access_visite_medicale_user,visite.medicale.user,model_visite_medicale,base.grou
 access_hr_faction_user,hr.faction.user,model_hr_faction,base.group_user,1,0,0,0
 access_hr_faction_hr_user,hr.faction.hr.user,model_hr_faction,hr.group_hr_user,1,1,1,0
 access_hr_faction_hr_manager,hr.faction.hr.manager,model_hr_faction,hr.group_hr_manager,1,1,1,1
+access_hr_formation_user,hr.formation.user,model_hr_formation,base.group_user,1,0,0,0
+access_hr_formation_hr_user,hr.formation.hr.user,model_hr_formation,hr.group_hr_user,1,1,1,0
+access_hr_formation_hr_manager,hr.formation.hr.manager,model_hr_formation,hr.group_hr_manager,1,1,1,1
+access_ange_employee_formation_user,ange.employee.formation.user,model_ange_employee_formation,base.group_user,1,0,0,0
+access_ange_employee_formation_hr_user,ange.employee.formation.hr.user,model_ange_employee_formation,hr.group_hr_user,1,1,1,0
+access_ange_employee_formation_hr_manager,ange.employee.formation.hr.manager,model_ange_employee_formation,hr.group_hr_manager,1,1,1,1
+access_ange_equipement_user,ange.equipement.user,model_ange_equipement,base.group_user,1,0,0,0
+access_ange_equipement_hr_user,ange.equipement.hr.user,model_ange_equipement,hr.group_hr_user,1,1,1,0
+access_ange_equipement_hr_manager,ange.equipement.hr.manager,model_ange_equipement,hr.group_hr_manager,1,1,1,1
+access_ange_employee_equipement_user,ange.employee.equipement.user,model_ange_employee_equipement,base.group_user,1,0,0,0
+access_ange_employee_equipement_hr_user,ange.employee.equipement.hr.user,model_ange_employee_equipement,hr.group_hr_user,1,1,1,0
+access_ange_employee_equipement_hr_manager,ange.employee.equipement.hr.manager,model_ange_employee_equipement,hr.group_hr_manager,1,1,1,1

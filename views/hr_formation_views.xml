@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Vue formulaire pour hr.formation -->
+        <record id="view_hr_formation_form" model="ir.ui.view">
+            <field name="name">hr.formation.form</field>
+            <field name="model">hr.formation</field>
+            <field name="arch" type="xml">
+                <form string="Formation">
+                    <header>
+                        <button name="action_assign_employees" type="object" string="Assigner des Employés" class="btn-primary"/>
+                        <button name="action_view_employee_formations" type="object" string="Voir les Statuts" class="btn-secondary"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Nom de la formation"/>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group string="Informations Générales">
+                                <field name="description"/>
+                                <field name="duree_avant_recyclage"/>
+                                <field name="active" widget="boolean_toggle"/>
+                            </group>
+                            <group string="Statistiques">
+                                <field name="nb_employes_total" readonly="1"/>
+                                <field name="nb_employes_termines" readonly="1"/>
+                                <field name="nb_employes_en_cours" readonly="1"/>
+                                <field name="nb_employes_recyclage" readonly="1"/>
+                                <field name="pourcentage_completion" readonly="1" widget="percentage"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Employés Assignés">
+                                <field name="employee_formation_ids" nolabel="1">
+                                    <list decoration-success="statut=='terminee'" 
+                                          decoration-warning="statut=='en_cours'" decoration-danger="statut=='recyclage_requis'"
+                                          decoration-muted="statut=='non_fait'">
+                                        <field name="employee_id" readonly="1"/>
+                                        <field name="statut" widget="badge"/>
+                                        <field name="date_debut"/>
+                                        <field name="date_fin"/>
+                                        <field name="date_recyclage" readonly="1"/>
+                                        <field name="jours_avant_recyclage" readonly="1"/>
+                                        <field name="alerte_recyclage" widget="boolean_toggle" readonly="1"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vue liste pour hr.formation -->
+        <record id="view_hr_formation_list" model="ir.ui.view">
+            <field name="name">hr.formation.list</field>
+            <field name="model">hr.formation</field>
+            <field name="arch" type="xml">
+                <list string="Formations (Catalogue)">
+                    <field name="name"/>
+                    <field name="description" optional="show"/>
+                    <field name="duree_avant_recyclage" optional="show"/>
+                    <field name="nb_employes_total" optional="show"/>
+                    <field name="nb_employes_termines" optional="show"/>
+                    <field name="nb_employes_en_cours" optional="show"/>
+                    <field name="nb_employes_recyclage" optional="show"/>
+                    <field name="pourcentage_completion" optional="show" widget="percentage"/>
+                    <field name="active" widget="boolean_toggle" optional="hide"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Vue kanban pour hr.formation -->
+        <record id="view_hr_formation_kanban" model="ir.ui.view">
+            <field name="name">hr.formation.kanban</field>
+            <field name="model">hr.formation</field>
+            <field name="arch" type="xml">
+                <kanban string="Formations (Catalogue)" class="o_kanban_small_column">
+                    <field name="name"/>
+                    <field name="description"/>
+                    <field name="nb_employes_total"/>
+                    <field name="nb_employes_termines"/>
+                    <field name="nb_employes_en_cours"/>
+                    <field name="nb_employes_recyclage"/>
+                    <field name="pourcentage_completion"/>
+                    <field name="active"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_card oe_kanban_global_click" style="border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin: 6px; border: none;">
+                                <!-- Header -->
+                                <div style="background: linear-gradient(135deg, #007bff, #0056b3); color: white; padding: 12px; position: relative;">
+                                    <!-- Titre -->
+                                    <h4 style="margin: 0 0 4px 0; font-weight: 600; font-size: 14px;">
+                                        <field name="name"/>
+                                    </h4>
+                                    <div style="opacity: 0.9; font-size: 12px;">
+                                        <i class="fa fa-users" title="Employés" style="margin-right: 4px;"/>
+                                        <t t-esc="record.nb_employes_total.raw_value"/> employé(s)
+                                    </div>
+                                </div>
+
+                                <!-- Contenu -->
+                                <div style="padding: 12px; background: white;">
+                                    <!-- Description -->
+                                    <div t-if="record.description.raw_value" style="font-size: 12px; color: #6c757d; margin-bottom: 8px;">
+                                        <field name="description"/>
+                                    </div>
+                                    
+                                    <!-- Statistiques -->
+                                    <div style="margin-bottom: 8px;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                            <span style="font-size: 11px; color: #28a745;">✓ Terminées: <t t-esc="record.nb_employes_termines.raw_value"/></span>
+                                            <span style="font-size: 11px; color: #007bff;">⏳ En cours: <t t-esc="record.nb_employes_en_cours.raw_value"/></span>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between;">
+                                            <span style="font-size: 11px; color: #dc3545;">🔄 Recyclage: <t t-esc="record.nb_employes_recyclage.raw_value"/></span>
+                                            <span style="font-size: 11px; font-weight: 500;"><t t-esc="Math.round(record.pourcentage_completion.raw_value)"/>% complété</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Barre de progression -->
+                                    <div style="background: #e9ecef; border-radius: 10px; height: 6px; margin-top: 8px;">
+                                        <div t-att-style="'background: #28a745; height: 6px; border-radius: 10px; width: ' + record.pourcentage_completion.raw_value + '%;'"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Vue de recherche pour hr.formation -->
+        <record id="view_hr_formation_search" model="ir.ui.view">
+            <field name="name">hr.formation.search</field>
+            <field name="model">hr.formation</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher Formations">
+                    <field name="name" string="Formation"/>
+                    <field name="description" string="Description"/>
+                    <separator/>
+                    <filter string="Formations actives" name="active" domain="[('active', '=', True)]"/>
+                    <filter string="Formations inactives" name="inactive" domain="[('active', '=', False)]"/>
+                    <separator/>
+                    <group expand="0" string="Grouper par">
+                        <filter string="Statut" name="group_active" context="{'group_by': 'active'}"/>
+                        <filter string="Durée recyclage" name="group_duree" context="{'group_by': 'duree_avant_recyclage'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action pour hr.formation -->
+        <record id="action_hr_formation" model="ir.actions.act_window">
+            <field name="name">Catalogue de Formations</field>
+            <field name="res_model">hr.formation</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Créer une nouvelle formation
+                </p>
+                <p>
+                    Gérez le catalogue de formations et assignez-les aux employés avec suivi individuel des statuts.
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu pour hr.formation -->
+        <menuitem id="menu_hr_formation"
+                  name="Formations"
+                  parent="hr.menu_hr_root"
+                  sequence="60"/>
+
+        <menuitem id="menu_hr_catalogue_formation"
+                  name="Catalogue de Formation"
+                  parent="menu_hr_formation"
+                  action="action_hr_formation"
+                  sequence="10"/>
+
+    </data>
+</odoo>

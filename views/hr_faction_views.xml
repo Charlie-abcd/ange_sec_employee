@@ -71,7 +71,7 @@
                     <field name="active"/>
                     <field name="description"/>
                     <templates>
-                        <t t-name="kanban-box">
+                        <t t-name="card">
                             <div class="oe_kanban_card oe_kanban_global_click" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin: 8px; border: none; overflow: hidden;">
                                 <!-- Header coloré selon le type -->
                                 <div t-att-style="'background: linear-gradient(135deg, ' + (record.type_faction.raw_value === 'jour' ? '#28a745, #34ce57' : record.type_faction.raw_value === 'nuit' ? '#6c5ce7, #a29bfe' : '#fd7e14, #fdcb6e') + '); color: white; padding: 16px; position: relative;'">

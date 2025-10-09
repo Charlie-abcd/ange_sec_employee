@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vue formulaire pour ange.equipement -->
+    <record id="view_equipement_form" model="ir.ui.view">
+        <field name="name">ange.equipement.form</field>
+        <field name="model">ange.equipement</field>
+        <field name="arch" type="xml">
+            <form string="Équipement">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" placeholder="Nom de l'équipement..."/>
+                            <field name="periode_renouvellement"/>
+                            <field name="nb_employees" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="deductible"/>
+                            <field name="montant_deductible" invisible="not deductible"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description" placeholder="Description détaillée de l'équipement..."/>
+                    </group>
+                    <notebook>
+                        <page string="Employés Assignés" name="employees">
+                            <field name="employee_equipement_ids">
+                                <list string="Assignations">
+                                    <field name="employee_id"/>
+                                    <field name="date_remise"/>
+                                    <field name="date_renouvellement"/>
+                                    <field name="statut" decoration-success="statut == 'actif'" decoration-warning="statut == 'expire'" decoration-muted="statut in ('renouvele', 'retire')"/>
+                                    <field name="jours_avant_expiration"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue liste pour ange.equipement -->
+    <record id="view_equipement_list" model="ir.ui.view">
+        <field name="name">ange.equipement.list</field>
+        <field name="model">ange.equipement</field>
+        <field name="arch" type="xml">
+            <list string="Équipements">
+                <field name="name"/>
+                <field name="periode_renouvellement"/>
+                <field name="deductible"/>
+                <field name="montant_deductible" optional="hide"/>
+                <field name="nb_employees"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vue kanban pour ange.equipement -->
+    <record id="view_equipement_kanban" model="ir.ui.view">
+        <field name="name">ange.equipement.kanban</field>
+        <field name="model">ange.equipement</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="description"/>
+                <field name="deductible"/>
+                <field name="montant_deductible"/>
+                <field name="nb_employees"/>
+                <field name="periode_renouvellement"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="card h-100 o_kanban_record">
+                            <div class="card-header bg-primary text-white d-flex align-items-center">
+                                <i class="fa fa-wrench me-2" title="Équipement"></i>
+                                <strong class="flex-grow-1 text-truncate" t-esc="record.name.value"/>
+                                <span t-if="record.deductible.raw_value" class="badge bg-warning text-dark ms-2">
+                                    <i class="fa fa-money"></i> Déductible
+                                </span>
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <div class="mb-2">
+                                    <small class="text-muted" t-if="record.description.value" t-esc="record.description.value"/>
+                                </div>
+                                <div class="row g-2 mb-3">
+                                    <div class="col-6">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fa fa-clock-o text-info me-1" title="Période de renouvellement"></i>
+                                            <small><strong><t t-esc="record.periode_renouvellement.value"/> mois</strong></small>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fa fa-users text-success me-1" title="Nombre d'employés"></i>
+                                            <small><strong><t t-esc="record.nb_employees.value"/> employé(s)</strong></small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div t-if="record.deductible.raw_value" class="mt-auto">
+                                    <div class="alert alert-warning py-1 px-2 mb-0" role="status">
+                                        <small>
+                                            <i class="fa fa-exclamation-triangle me-1" title="Montant déductible"></i>
+                                            <strong><t t-esc="record.montant_deductible.value"/> FCFA déductible</strong>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Vue formulaire pour ange.employee.equipement -->
+    <record id="view_employee_equipement_form" model="ir.ui.view">
+        <field name="name">ange.employee.equipement.form</field>
+        <field name="model">ange.employee.equipement</field>
+        <field name="arch" type="xml">
+            <form string="Équipement Employé">
+                <header>
+                    <button name="action_renouveler" string="Renouveler" type="object" class="btn-primary" invisible="statut != 'actif'"/>
+                    <field name="statut" widget="statusbar" statusbar_visible="actif,expire,renouvele"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="equipement_id"/>
+                            <field name="date_remise"/>
+                        </group>
+                        <group>
+                            <field name="date_renouvellement" readonly="1"/>
+                            <field name="jours_avant_expiration" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes" placeholder="Notes concernant cet équipement pour cet employé..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue liste pour ange.employee.equipement -->
+    <record id="view_employee_equipement_list" model="ir.ui.view">
+        <field name="name">ange.employee.equipement.list</field>
+        <field name="model">ange.employee.equipement</field>
+        <field name="arch" type="xml">
+            <list string="Équipements Employés" editable="bottom">
+                <field name="employee_id"/>
+                <field name="equipement_id"/>
+                <field name="date_remise"/>
+                <field name="date_renouvellement" readonly="1"/>
+                <field name="jours_avant_expiration" readonly="1" decoration-danger="jours_avant_expiration &lt; 0" decoration-warning="jours_avant_expiration &lt;= 30 and jours_avant_expiration &gt;= 0"/>
+                <field name="statut" decoration-success="statut == 'actif'" decoration-warning="statut == 'expire'" decoration-muted="statut in ('renouvele', 'retire')"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vue kanban pour ange.employee.equipement -->
+    <record id="view_employee_equipement_kanban" model="ir.ui.view">
+        <field name="name">ange.employee.equipement.kanban</field>
+        <field name="model">ange.employee.equipement</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="employee_id"/>
+                <field name="equipement_id"/>
+                <field name="date_remise"/>
+                <field name="date_renouvellement"/>
+                <field name="statut"/>
+                <field name="jours_avant_expiration"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="card h-100 o_kanban_record">
+                            <div t-attf-class="card-header text-white d-flex align-items-center #{record.statut.raw_value == 'actif' ? 'bg-success' : record.statut.raw_value == 'expire' ? 'bg-danger' : record.statut.raw_value == 'renouvele' ? 'bg-info' : 'bg-secondary'}">
+                                <i class="fa fa-user me-2" title="Employé"></i>
+                                <div class="flex-grow-1">
+                                    <div class="fw-bold text-truncate" t-esc="record.equipement_id.value"/>
+                                    <small class="opacity-75" t-esc="record.employee_id.value"/>
+                                </div>
+                                <span t-if="record.statut.raw_value == 'actif'" class="badge bg-light text-success">
+                                    <i class="fa fa-check"></i> Actif
+                                </span>
+                                <span t-elif="record.statut.raw_value == 'expire'" class="badge bg-light text-danger">
+                                    <i class="fa fa-exclamation-triangle"></i> Expiré
+                                </span>
+                                <span t-elif="record.statut.raw_value == 'renouvele'" class="badge bg-light text-info">
+                                    <i class="fa fa-refresh"></i> Renouvelé
+                                </span>
+                                <span t-elif="record.statut.raw_value == 'retire'" class="badge bg-light text-secondary">
+                                    <i class="fa fa-times"></i> Retiré
+                                </span>
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <div class="row g-2 mb-3">
+                                    <div class="col-6">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fa fa-calendar text-primary me-1" title="Date de remise"></i>
+                                            <div>
+                                                <small class="text-muted">Remis le</small>
+                                                <div class="fw-bold" t-esc="record.date_remise.value"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fa fa-refresh text-info me-1" title="Date de renouvellement"></i>
+                                            <div>
+                                                <small class="text-muted">Renouvellement</small>
+                                                <div class="fw-bold" t-esc="record.date_renouvellement.value"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Alerte d'expiration -->
+                                <div class="mt-auto">
+                                    <div t-if="record.jours_avant_expiration.raw_value &lt; 0" class="alert alert-danger py-2 px-3 mb-0" role="alert">
+                                        <i class="fa fa-exclamation-triangle me-1" title="Équipement expiré"></i>
+                                        <strong>Expiré depuis <t t-esc="Math.abs(record.jours_avant_expiration.raw_value)"/> jour(s)</strong>
+                                    </div>
+                                    <div t-elif="record.jours_avant_expiration.raw_value &lt;= 30 and record.jours_avant_expiration.raw_value >= 0" class="alert alert-warning py-2 px-3 mb-0" role="alert">
+                                        <i class="fa fa-clock-o me-1" title="Équipement expire bientôt"></i>
+                                        <strong>Expire dans <t t-esc="record.jours_avant_expiration.raw_value"/> jour(s)</strong>
+                                    </div>
+                                    <div t-elif="record.jours_avant_expiration.raw_value > 30" class="alert alert-success py-2 px-3 mb-0" role="status">
+                                        <i class="fa fa-check-circle me-1" title="Équipement valide"></i>
+                                        <strong>Valide encore <t t-esc="record.jours_avant_expiration.raw_value"/> jour(s)</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Actions pour ange.equipement -->
+    <record id="action_equipement" model="ir.actions.act_window">
+        <field name="name">Équipements</field>
+        <field name="res_model">ange.equipement</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créer votre premier équipement
+            </p>
+            <p>
+                Gérez les équipements de votre entreprise et leur assignation aux employés.
+            </p>
+        </field>
+    </record>
+
+    <!-- Actions pour ange.employee.equipement -->
+    <record id="action_employee_equipement" model="ir.actions.act_window">
+        <field name="name">Équipements Employés</field>
+        <field name="res_model">ange.employee.equipement</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun équipement assigné
+            </p>
+            <p>
+                Assignez des équipements aux employés et suivez leur renouvellement.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu principal Équipements sous hr.menu_hr_root -->
+    <menuitem id="menu_equipements_root" 
+              name="Équipements" 
+              parent="hr.menu_hr_root" 
+              sequence="30"/>
+
+    <!-- Sous-menu Équipements -->
+    <menuitem id="menu_equipements" 
+              name="Équipements" 
+              parent="menu_equipements_root" 
+              action="action_equipement" 
+              sequence="10"/>
+
+    <!-- Sous-menu Assignations -->
+    <menuitem id="menu_employee_equipements" 
+              name="Assignations" 
+              parent="menu_equipements_root" 
+              action="action_employee_equipement" 
+              sequence="20"/>
+
+</odoo>

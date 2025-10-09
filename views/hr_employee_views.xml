@@ -14,20 +14,77 @@
                     <page string="ÉQUIPEMENT ET SANTÉ" name="equipment_health">
                         <group>
                             <group string="Équipement">
-                                <field name="uniforme_travail" placeholder="Description de l'uniforme attribué..."/>
-                                <field name="date_renouvellement_uniforme"/>
+                                <div class="oe_button_box" name="button_box_equipements">
+                                    <button name="action_view_equipements" type="object" class="oe_stat_button" icon="fa-wrench">
+                                        <field name="nb_equipements_actifs" widget="statinfo" string="Actifs"/>
+                                    </button>
+                                    <button name="action_view_equipements" type="object" class="oe_stat_button" icon="fa-exclamation-triangle">
+                                        <field name="nb_equipements_expires" widget="statinfo" string="Expirés"/>
+                                    </button>
+                                </div>
+                                <field name="equipement_ids" context="{'default_employee_id': id}">
+                                    <list string="Équipements" editable="bottom">
+                                        <field name="equipement_id" required="1"/>
+                                        <field name="date_remise"/>
+                                        <field name="date_renouvellement" readonly="1"/>
+                                        <field name="jours_avant_expiration" readonly="1" decoration-danger="jours_avant_expiration &lt; 0" decoration-warning="jours_avant_expiration &lt;= 30 and jours_avant_expiration &gt;= 0"/>
+                                        <field name="statut" decoration-success="statut == 'actif'" decoration-warning="statut == 'expire'" decoration-muted="statut in ('renouvele', 'retire')"/>
+                                        <button name="action_renouveler" string="Renouveler" type="object" class="btn-link" icon="fa-refresh" invisible="statut != 'actif'"/>
+                                    </list>
+                                </field>
                             </group>
                             <group string="Santé">
                                 <field name="visite_medicale_ids" widget="one2many_list" colspan="2">
-                                    <list string="Visites Médicales" editable="bottom">
+                                    <list string="Visites Médicales">
                                         <field name="date"/>
                                         <field name="description"/>
                                         <field name="fait" widget="boolean_toggle"/>
                                     </list>
                                 </field>
-                                <field name="etat_formations" placeholder="État actuel des formations..."/>
                             </group>
                         </group>
+                    </page>
+                    <page string="FORMATIONS" name="formations_page">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="oe_button_box" name="button_box">
+                                    <button name="action_view_formations" type="object" class="oe_stat_button" icon="fa-graduation-cap">
+                                        <field name="nb_formations_total" widget="statinfo" string="Total"/>
+                                    </button>
+                                    <button name="action_view_formations" type="object" class="oe_stat_button" icon="fa-check-circle" style="color: #28a745;">
+                                        <field name="nb_formations_terminees" widget="statinfo" string="Terminées"/>
+                                    </button>
+                                    <button name="action_view_formations" type="object" class="oe_stat_button" icon="fa-clock-o" style="color: #007bff;">
+                                        <field name="nb_formations_en_cours" widget="statinfo" string="En cours"/>
+                                    </button>
+                                    <button name="action_view_formations" type="object" class="oe_stat_button" icon="fa-refresh" style="color: #dc3545;">
+                                        <field name="nb_formations_recyclage" widget="statinfo" string="Recyclage"/>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <group>
+                            <group string="Statistiques">
+                                <field name="nb_formations_total" readonly="1"/>
+                                <field name="nb_formations_terminees" readonly="1"/>
+                                <field name="nb_formations_en_cours" readonly="1"/>
+                                <field name="nb_formations_recyclage" readonly="1"/>
+                            </group>
+                        </group>
+                        <field name="formation_ids" widget="one2many_list" nolabel="1">
+                            <list decoration-success="statut=='terminee'" 
+                                  decoration-warning="statut=='en_cours'" decoration-danger="statut=='recyclage_requis'"
+                                  decoration-muted="statut=='non_fait'">
+                                <field name="formation_id" options="{'no_create_edit': True}"/>
+                                <field name="statut" widget="badge"/>
+                                <field name="date_debut"/>
+                                <field name="date_fin"/>
+                                <field name="date_recyclage" readonly="1"/>
+                                <field name="duree_formation" readonly="1" optional="hide"/>
+                                <field name="jours_avant_recyclage" readonly="1" optional="hide"/>
+                                <field name="alerte_recyclage" widget="boolean_toggle" readonly="1" optional="hide"/>
+                            </list>
+                        </field>
                     </page>
                 </xpath>
 
@@ -57,9 +114,15 @@
                     </group>
                 </xpath>
 
-                <!-- Ajout du champ faction dans la zone Horaire -->
-                <xpath expr="//field[@name='resource_calendar_id']" position="after">
-                    <field name="faction_id" options="{'no_create_edit': True}"/>
+                <!-- Ajout des champs faction dans la zone Horaire -->
+                <xpath expr="//group[@name='departure']" position="after">
+                    <group string="Faction">
+                        <field name="type_faction_choisi" widget="radio"/>
+                        <field name="faction_id" 
+                               options="{'no_create_edit': True}"
+                               domain="[('type_faction', '=', type_faction_choisi)]"
+                               invisible="type_faction_choisi == False"/>
+                    </group>
                 </xpath>
 
             </field>
@@ -90,41 +153,9 @@
                 <xpath expr="//group" position="inside">
                     <filter string="Avec matricule agent" name="has_matricule" 
                             domain="[('matricule_agent', '!=', False)]"/>
-                    <filter string="Uniforme à renouveler" name="uniform_renewal" 
-                            domain="[('date_renouvellement_uniforme', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Équipements expirés" name="expired_equipment" 
+                            domain="[('equipement_ids.statut', '=', 'expire')]"/>
                 </xpath>
-            </field>
-        </record>
-
-        <!-- Vue formulaire simple pour les visites médicales (pour le widget many2many) -->
-        <record id="view_visite_medicale_form_simple" model="ir.ui.view">
-            <field name="name">visite.medicale.form.simple</field>
-            <field name="model">visite.medicale</field>
-            <field name="arch" type="xml">
-                <form string="Visite Médicale">
-                    <group>
-                        <group>
-                            <field name="date"/>
-                            <field name="fait"/>
-                        </group>
-                        <group>
-                            <field name="description" placeholder="Description de la visite médicale..."/>
-                        </group>
-                    </group>
-                </form>
-            </field>
-        </record>
-
-        <!-- Vue liste pour les visites médicales -->
-        <record id="view_visite_medicale_list" model="ir.ui.view">
-            <field name="name">visite.medicale.list</field>
-            <field name="model">visite.medicale</field>
-            <field name="arch" type="xml">
-                <list string="Visites Médicales">
-                    <field name="date"/>
-                    <field name="description"/>
-                    <field name="fait" widget="boolean_toggle"/>
-                </list>
             </field>
         </record>
 

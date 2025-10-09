@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Équipements de base Ange Security -->
+        
+        <!-- Uniformes et Vêtements -->
+
+        <record id="equipement_uniforme_terrain" model="ange.equipement">
+            <field name="name">Uniforme de terrain</field>
+            <field name="description">Uniforme complet</field>
+            <field name="periode_renouvellement">12</field>
+            <field name="deductible">True</field>
+            <field name="montant_deductible">50000</field>
+        </record>
+
+        <record id="equipement_chaussures_securite" model="ange.equipement">
+            <field name="name">Chaussures de sécurité</field>
+            <field name="description">Chaussures de sécurité normées S3 avec coque de protection</field>
+            <field name="periode_renouvellement">8</field>
+            <field name="deductible">True</field>
+            <field name="montant_deductible">40000</field>
+        </record>
+
+        <record id="equipement_gilet_haute_visibilite" model="ange.equipement">
+            <field name="name">Gilet haute visibilité</field>
+            <field name="description">Gilet réfléchissant haute visibilité conforme aux normes EN ISO 20471</field>
+            <field name="periode_renouvellement">6</field>
+            <field name="deductible">False</field>
+        </record>
+
+        <!-- Équipements de Communication -->
+        <record id="equipement_talkie_walkie" model="ange.equipement">
+            <field name="name">Talkie-walkie</field>
+            <field name="description">Radio portable professionnelle avec écouteur et micro-cravate</field>
+            <field name="periode_renouvellement">24</field>
+            <field name="deductible">False</field>
+        </record>
+
+        <record id="equipement_telephone_portable" model="ange.equipement">
+            <field name="name">Téléphone portable</field>
+            <field name="description">Smartphone professionnel avec forfait illimité</field>
+            <field name="periode_renouvellement">36</field>
+            <field name="deductible">False</field>
+        </record>
+
+        <!-- Équipements de Protection -->
+        <record id="equipement_casque_protection" model="ange.equipement">
+            <field name="name">Casque de protection</field>
+            <field name="description">Casque de sécurité avec jugulaire, conforme EN 397</field>
+            <field name="periode_renouvellement">24</field>
+            <field name="deductible">False</field>
+        </record>
+
+        <record id="equipement_gants_securite" model="ange.equipement">
+            <field name="name">Gants de sécurité</field>
+            <field name="description">Gants de protection multi-usages, résistants aux coupures</field>
+            <field name="periode_renouvellement">3</field>
+            <field name="deductible">False</field>
+        </record>
+
+        <record id="equipement_lunettes_protection" model="ange.equipement">
+            <field name="name">Lunettes de protection</field>
+            <field name="description">Lunettes de sécurité avec protection UV et anti-buée</field>
+            <field name="periode_renouvellement">12</field>
+            <field name="deductible">False</field>
+        </record>
+
+        <!-- Équipements Techniques -->
+        <record id="equipement_lampe_torche" model="ange.equipement">
+            <field name="name">Lampe torche LED</field>
+            <field name="description">Lampe torche LED haute puissance avec batterie rechargeable</field>
+            <field name="periode_renouvellement">18</field>
+            <field name="deductible">False</field>
+        </record>
+
+        <record id="equipement_badge_identification" model="ange.equipement">
+            <field name="name">Badge d'identification</field>
+            <field name="description">Badge nominatif avec photo et logo Ange Security</field>
+            <field name="periode_renouvellement">24</field>
+            <field name="deductible">False</field>
+        </record>
+
+        <!-- Équipements de Surveillance -->
+
+        <record id="equipement_carnet_rapport" model="ange.equipement">
+            <field name="name">Carnet de rapport</field>
+            <field name="description">Carnet officiel pour la rédaction des rapports d'intervention</field>
+            <field name="periode_renouvellement">6</field>
+            <field name="deductible">False</field>
+        </record>
+
+        <!-- Équipements Spécialisés -->
+        <record id="equipement_menottes" model="ange.equipement">
+            <field name="name">Menottes de sécurité</field>
+            <field name="description">Menottes professionnelles avec clés de sécurité</field>
+            <field name="periode_renouvellement">60</field>
+            <field name="deductible">False</field>
+        </record>
+
+        <record id="equipement_baton_telescopique" model="ange.equipement">
+            <field name="name">Bâton télescopique</field>
+            <field name="description">Bâton de défense télescopique avec étui de transport</field>
+            <field name="periode_renouvellement">60</field>
+            <field name="deductible">False</field>
+        </record>
+
+        <record id="equipement_spray_defense" model="ange.equipement">
+            <field name="name">Spray de défense</field>
+            <field name="description">Spray lacrymogène de défense légal avec étui</field>
+            <field name="periode_renouvellement">12</field>
+            <field name="deductible">False</field>
+        </record>
+
+        <!-- Équipements Administratifs -->
+        <record id="equipement_tablette_numerique" model="ange.equipement">
+            <field name="name">Tablette numérique</field>
+            <field name="description">Tablette durcie pour rapports numériques et communication</field>
+            <field name="periode_renouvellement">48</field>
+            <field name="deductible">False</field>
+        </record>
+
+        <record id="equipement_trousse_premiers_secours" model="ange.equipement">
+            <field name="name">Trousse de premiers secours</field>
+            <field name="description">Trousse complète de premiers secours conforme aux normes</field>
+            <field name="periode_renouvellement">12</field>
+            <field name="deductible">False</field>
+        </record>
+
+    </data>
+</odoo>

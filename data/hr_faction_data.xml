@@ -4,7 +4,7 @@
         
         <!-- Factions Standard Jour -->
         <record id="faction_standard_jour_6_18" model="hr.faction">
-            <field name="name">Faction Standard Jour</field>
+            <field name="name">Faction Jour (06h00 - 18h00)</field>
             <field name="heure_debut">6.0</field>
             <field name="heure_fin">18.0</field>
             <field name="type_faction">jour</field>
@@ -13,7 +13,7 @@
         </record>
         
         <record id="faction_standard_jour_7_19" model="hr.faction">
-            <field name="name">Faction Standard Jour</field>
+            <field name="name">Faction Jour (07h00 - 19h00)</field>
             <field name="heure_debut">7.0</field>
             <field name="heure_fin">19.0</field>
             <field name="type_faction">jour</field>
@@ -23,7 +23,7 @@
         
         <!-- Factions Nuit -->
         <record id="faction_nuit_18_6" model="hr.faction">
-            <field name="name">Faction Nuit</field>
+            <field name="name">Faction Nuit (18h00 - 06h00)</field>
             <field name="heure_debut">18.0</field>
             <field name="heure_fin">6.0</field>
             <field name="type_faction">nuit</field>
@@ -32,7 +32,7 @@
         </record>
         
         <record id="faction_nuit_19_7" model="hr.faction">
-            <field name="name">Faction Nuit</field>
+            <field name="name">Faction Nuit (19h00 - 07h00)</field>
             <field name="heure_debut">19.0</field>
             <field name="heure_fin">7.0</field>
             <field name="type_faction">nuit</field>
@@ -42,7 +42,7 @@
         
         <!-- Factions Custom -->
         <record id="faction_custom_matin" model="hr.faction">
-            <field name="name">Faction Custom Matin</field>
+            <field name="name">Faction Personnalisée Matin (06h00 - 14h00)</field>
             <field name="heure_debut">6.0</field>
             <field name="heure_fin">14.0</field>
             <field name="type_faction">custom</field>
@@ -51,7 +51,7 @@
         </record>
         
         <record id="faction_custom_apres_midi" model="hr.faction">
-            <field name="name">Faction Custom Après-midi</field>
+            <field name="name">Faction Personnalisée Après-midi (14h00 - 22h00)</field>
             <field name="heure_debut">14.0</field>
             <field name="heure_fin">22.0</field>
             <field name="type_faction">custom</field>
@@ -60,7 +60,7 @@
         </record>
         
         <record id="faction_custom_soir" model="hr.faction">
-            <field name="name">Faction Custom Soir</field>
+            <field name="name">Faction Personnalisée Soir (22h00 - 06h00)</field>
             <field name="heure_debut">22.0</field>
             <field name="heure_fin">6.0</field>
             <field name="type_faction">custom</field>

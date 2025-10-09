@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- Vue formulaire pour les visites médicales -->
+        <record id="view_visite_medicale_form" model="ir.ui.view">
+            <field name="name">visite.medicale.form</field>
+            <field name="model">visite.medicale</field>
+            <field name="arch" type="xml">
+                <form string="Visite Médicale">
+                    <header>
+                        <!-- Pas de statusbar pour un champ Boolean -->
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_calendar_event" type="object" 
+                                    class="oe_stat_button" icon="fa-calendar"
+                                    invisible="calendar_event_id == False">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_text">Voir dans</span>
+                                    <span class="o_stat_text">Calendrier</span>
+                                </div>
+                            </button>
+                        </div>
+                        
+                        <group>
+                            <group>
+                                <field name="employee_id" options="{'no_create': True}"/>
+                                <field name="date"/>
+                                <field name="fait" widget="boolean_toggle"/>
+                            </group>
+                            <group>
+                                <field name="calendar_event_id" readonly="1" invisible="calendar_event_id == False"/>
+                            </group>
+                        </group>
+                        
+                        <group string="Description">
+                            <field name="description" nolabel="1" placeholder="Description détaillée de la visite médicale..."/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vue liste pour les visites médicales -->
+        <record id="view_visite_medicale_list" model="ir.ui.view">
+            <field name="name">visite.medicale.list</field>
+            <field name="model">visite.medicale</field>
+            <field name="arch" type="xml">
+                <list string="Visites Médicales" decoration-success="fait==True" decoration-muted="fait==False">
+                    <field name="date"/>
+                    <field name="employee_id"/>
+                    <field name="description"/>
+                    <field name="fait" widget="boolean_toggle"/>
+                    <field name="calendar_event_id" optional="hide"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Vue kanban pour les visites médicales -->
+        <record id="view_visite_medicale_kanban" model="ir.ui.view">
+            <field name="name">visite.medicale.kanban</field>
+            <field name="model">visite.medicale</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="fait" class="o_kanban_small_column">
+                    <field name="date"/>
+                    <field name="employee_id"/>
+                    <field name="description"/>
+                    <field name="fait"/>
+                    <field name="calendar_event_id"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_card oe_kanban_global_click" style="border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin: 6px; border: none;">
+                                <!-- Header avec couleur selon statut -->
+                                <div t-attf-style="background: linear-gradient(135deg, #{record.fait.raw_value ? '#28a745' : '#dc3545'}, #{record.fait.raw_value ? '#1e7e34' : '#c82333'}); color: white; padding: 12px; position: relative;">
+                                    <!-- Titre -->
+                                    <h4 style="margin: 0 0 4px 0; font-weight: 600; font-size: 14px;">
+                                        <field name="employee_id"/>
+                                    </h4>
+                                    <div style="opacity: 0.9; font-size: 12px;">
+                                        <i class="fa fa-calendar" title="Date" style="margin-right: 4px;"/>
+                                        <field name="date"/>
+                                    </div>
+                                </div>
+
+                                <!-- Contenu -->
+                                <div style="padding: 12px; background: white;">
+                                    <!-- Description -->
+                                    <div t-if="record.description.raw_value" style="font-size: 12px; color: #6c757d; margin-bottom: 8px;">
+                                        <field name="description"/>
+                                    </div>
+                                    
+                                    <!-- Statut et calendrier -->
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div>
+                                            <span t-if="record.fait.raw_value" style="color: #28a745; font-size: 11px;">
+                                                <i class="fa fa-check-circle"/> Effectuée
+                                            </span>
+                                            <span t-if="!record.fait.raw_value" style="color: #dc3545; font-size: 11px;">
+                                                <i class="fa fa-clock-o"/> En attente
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <span t-if="record.calendar_event_id.raw_value" style="color: #007bff;" title="Synchronisé avec le calendrier">
+                                                <i class="fa fa-calendar"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Vue recherche pour les visites médicales -->
+        <record id="view_visite_medicale_search" model="ir.ui.view">
+            <field name="name">visite.medicale.search</field>
+            <field name="model">visite.medicale</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher Visites Médicales">
+                    <field name="employee_id"/>
+                    <field name="date"/>
+                    <field name="description"/>
+                    <separator/>
+                    <filter name="fait" string="Effectuées" domain="[('fait', '=', True)]"/>
+                    <filter name="non_fait" string="Non effectuées" domain="[('fait', '=', False)]"/>
+                    <filter name="avec_calendrier" string="Avec événement calendrier" domain="[('calendar_event_id', '!=', False)]"/>
+                    <separator/>
+                    <filter name="aujourd_hui" string="Aujourd'hui" 
+                            domain="[('date', '=', context_today())]"/>
+                    <filter name="passees" string="Visites passées" 
+                            domain="[('date', '&lt;', context_today())]"/>
+                    <filter name="futures" string="Visites futures" 
+                            domain="[('date', '&gt;', context_today())]"/>
+                    <group expand="0" string="Grouper par">
+                        <filter name="group_employee" string="Employé" context="{'group_by': 'employee_id'}"/>
+                        <filter name="group_date" string="Date" context="{'group_by': 'date'}"/>
+                        <filter name="group_fait" string="Statut" context="{'group_by': 'fait'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action pour les visites médicales -->
+        <record id="action_visite_medicale" model="ir.actions.act_window">
+            <field name="name">Visites Médicales</field>
+            <field name="res_model">visite.medicale</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Créer une nouvelle visite médicale
+                </p>
+                <p>
+                    Gérez les visites médicales des employés et synchronisez-les automatiquement avec le calendrier.
+                </p>
+            </field>
+        </record>
+
+
+        <!-- Menu pour les visites médicales -->
+        <menuitem id="menu_visite_medicale" 
+                  name="Visites Médicales" 
+                  parent="hr.menu_hr_root" 
+                  action="action_visite_medicale" 
+                  sequence="60"/>
+
+    </data>
+</odoo>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Configuration par défaut pour les alertes de recyclage -->
+        <record id="default_recyclage_alert_days" model="ir.config_parameter">
+            <field name="key">ange_sec_employee.jours_alerte_recyclage</field>
+            <field name="value">30</field>
+        </record>
+
+        <!-- Catalogue de formations pour Ange Security -->
+        <!-- Note: Ces formations sont maintenant un catalogue sans employés assignés directement -->
+        
+        <record id="formation_agent_liaison" model="hr.formation">
+            <field name="name">Agent de liaison</field>
+            <field name="description">Formation pour les agents de liaison - Communication et coordination</field>
+            <field name="duree_avant_recyclage">24</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="formation_superviseur" model="hr.formation">
+            <field name="name">Superviseur</field>
+            <field name="description">Formation de supervision et management d'équipe</field>
+            <field name="duree_avant_recyclage">12</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="formation_agent_prevention_securite" model="hr.formation">
+            <field name="name">Agent de prévention et sécurité</field>
+            <field name="description">Formation de base pour agents de sécurité - Prévention et intervention</field>
+            <field name="duree_avant_recyclage">24</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="formation_agent_prevention_securite_jour" model="hr.formation">
+            <field name="name">Agent de prévention et sécurité jour</field>
+            <field name="description">Formation spécialisée pour les agents de jour</field>
+            <field name="duree_avant_recyclage">24</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="formation_agent_prevention_securite_nuit" model="hr.formation">
+            <field name="name">Agent de prévention et sécurité nuit</field>
+            <field name="description">Formation spécialisée pour les agents de nuit</field>
+            <field name="duree_avant_recyclage">24</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="formation_agent_cynophiles" model="hr.formation">
+            <field name="name">Agent cynophiles</field>
+            <field name="description">Formation pour agents maîtres-chiens - Dressage et intervention</field>
+            <field name="duree_avant_recyclage">12</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="formation_agent_intervention_commando" model="hr.formation">
+            <field name="name">Agent d'intervention (commando)</field>
+            <field name="description">Formation d'intervention spécialisée - Techniques avancées</field>
+            <field name="duree_avant_recyclage">6</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="formation_hotesse_accueil" model="hr.formation">
+            <field name="name">Hôtesse d'accueil</field>
+            <field name="description">Formation accueil et service client</field>
+            <field name="duree_avant_recyclage">36</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="formation_agent_commerciaux" model="hr.formation">
+            <field name="name">Agent commerciaux</field>
+            <field name="description">Formation commerciale et prospection</field>
+            <field name="duree_avant_recyclage">24</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="formation_agent_entretien" model="hr.formation">
+            <field name="name">Agent d'entretien</field>
+            <field name="description">Formation entretien et maintenance des locaux</field>
+            <field name="duree_avant_recyclage">12</field>
+            <field name="active" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

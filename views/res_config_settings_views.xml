@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Extension des paramètres de configuration -->
+        <record id="res_config_settings_view_form_ange_security" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.ange.security</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="inside">
+                    <app string="Ange Security" name="ange_sec_employee">
+                        <block title="Formations">
+                            <setting string="Jours d'alerte avant recyclage" help="Nombre de jours avant la date de recyclage pour déclencher une alerte">
+                                <field name="jours_alerte_recyclage"/>
+                            </setting>
+                        </block>
+                    </app>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>
